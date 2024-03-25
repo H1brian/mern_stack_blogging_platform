@@ -1,7 +1,8 @@
 import User from '../models/user.model.js';
 import bcryptjs from 'bcryptjs';  // no 'js' added to the end of the name will result in error
+import { errorHandler } from '../utils/error.js';
 
-export const signup = async (req, res) => {
+export const signup = async (req, res, next) => {
     // res.json({ message: 'Running well'})
     const { username, email, password } = req.body;
 
@@ -10,7 +11,8 @@ export const signup = async (req, res) => {
         !username || !email || !password || 
         username === '' || email === '' || password === ''
     ) {
-        return res.status(400).json({message: 'All fields are required'})
+        // return res.status(400).json({message: 'All fields are required'});
+        next(errorHandler(400, 'All fields are required'));  // Call 'next' middleware created in index.js
     }
 
     // Hash the password
@@ -27,6 +29,7 @@ export const signup = async (req, res) => {
         await newUser.save();
         res.json({ message: "Signup successfully!"});
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        // res.status(500).json({ message: error.message });
+        next(error);
     }
 };
