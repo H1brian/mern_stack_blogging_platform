@@ -3,19 +3,24 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 export default function SignUp() {
-const [formData, setFormData] = useState({}); // React hook to manage form data
-const [errorMessage, setErrorMessage] = useState(null);  // Handling the error, default is null
-const [loading, setLoading] = useState(false);  // Set the loading state
-const navigate = useNavigate();
+  const [formData, setFormData] = useState({}); // React hook to manage form data
+  const [errorMessage, setErrorMessage] = useState(null);  // Handling the error, default is null
+  const [loading, setLoading] = useState(false);  // Set the loading state
+  const navigate = useNavigate();
+
+  // Handling the form data
   const handleChange = (e) => {
-    setFormData({...formData, [e.target.id]: e.target.value.trim()}); // Using trim to remove the space
-  }; 
+      setFormData({...formData, [e.target.id]: e.target.value.trim()}); // Using trim to remove the space
+    }; 
+
+  // Handling the submission
   const handleSubmit = async (e) => {
     e.preventDefault();  // Prevent the webpage to refresh defaultly
-    // Handling some of the fields are null
+    
+    // Check if some of the fields are null
     if (!formData.username || !formData.email || !formData.password) {
-      return setErrorMessage('Please fill out all fields.');
-    }
+        return setErrorMessage('Please fill out all fields.');
+      }
     try {
       setLoading(true);
       setErrorMessage(null);
@@ -24,7 +29,7 @@ const navigate = useNavigate();
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(formData),
       });
-      const data = await res.json();
+      const data = await res.json();  //Change data into JSON format
       if (data.success === false) {
         return setErrorMessage(data.message)
       };
